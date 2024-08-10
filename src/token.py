@@ -1,11 +1,12 @@
 from tokentype import TokenType
+from typing import Optional
 
 
 class Token:
     def __init__(self,
                  type_: TokenType,
                  lexeme: str,
-                 literal: str | float | bool,
+                 literal: Optional[str | float | bool],
                  line: int):
         self.type = type_
         self.lexeme = lexeme
