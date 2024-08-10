@@ -13,11 +13,17 @@ def main():
 
 
 def runFile(path):
-    print(f"Running file: \"{path}\"")
+    with open(path, 'r') as sourcefile:
+        source = sourcefile.read()
+    run(source)
 
 
 def runPrompt():
     print("Running prompt")
+
+
+def run(source):
+    print(f"\"{source}\"")
 
 
 if __name__ == "__main__":
