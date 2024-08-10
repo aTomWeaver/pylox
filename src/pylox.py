@@ -2,38 +2,49 @@ import sys
 from scanner import Scanner
 
 
-def main():
-    args = sys.argv[1:]
-    if len(args) > 1:
-        print("Usage: pylox: [script]")
-        sys.exit(64)
-    elif (len(args) == 1):
-        runFile(args[0])
-    else:
-        runPrompt()
+class Lox:
+    def __init__(self):
+        self.hadError = False
 
+    def main(self):
+        args = sys.argv[1:]
+        if len(args) > 1:
+            print("Usage: pylox: [script]")
+            sys.exit(64)
+        elif (len(args) == 1):
+            self.runFile(args[0])
+        else:
+            self.runPrompt()
 
-def runFile(path):
-    with open(path, 'r') as sourcefile:
-        source = sourcefile.read()
-    run(source)
+    def runFile(self, path: str):
+        with open(path, 'r') as sourcefile:
+            source = sourcefile.read()
+        self.run(source)
+        if self.hadError:
+            sys.exit(65)
 
+    def runPrompt(self):
+        while True:
+            line = input("> ")
+            if line == "exit()":  # TODO: proper EOF detection
+                break
+            self.run(line)
+            self.hadError = False
 
-def runPrompt():
-    while True:
-        line = input("> ")
-        if line == "exit()":  # TODO: proper EOF detection
-            break
-        run(line)
+    def run(self, source: str):
+        scanner = Scanner(source)
+        tokens = scanner.scanTokens()
+        for token in tokens:
+            print(token)
 
+    def error(self, line: int, message: str):
+        self.report(line, "", message)
 
-def run(source):
-    scanner = Scanner(source)
-    tokens = scanner.scanTokens()
-
-    for token in tokens:
-        print(token)
+    def __report(self, line: int, where: int, message: str):
+        print(f"[line {line}] Error {where}: {message}")
+        self.hadError = True
 
 
 if __name__ == "__main__":
-    main()
+    lox = Lox()
+    lox.main()
