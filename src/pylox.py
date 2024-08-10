@@ -1,4 +1,5 @@
 import sys
+from scanner import Scanner
 
 
 def main():
@@ -19,11 +20,19 @@ def runFile(path):
 
 
 def runPrompt():
-    print("Running prompt")
+    while True:
+        line = input("> ")
+        if line == "exit()":  # TODO: proper EOF detection
+            break
+        run(line)
 
 
 def run(source):
-    print(f"\"{source}\"")
+    scanner = Scanner(source)
+    tokens = scanner.scanTokens()
+
+    for token in tokens:
+        print(token)
 
 
 if __name__ == "__main__":
