@@ -71,6 +71,8 @@ class Scanner:
             pass
         elif c == '\n':
             self.line += 1
+        elif c == '"':
+            self.__string()
         else:
             self.parent.error(self.line, f"Unexpected character: \"{c}\"")
 
@@ -101,3 +103,18 @@ class Scanner:
         if self.isAtEnd():
             return '\0'
         return self.source[self.current]
+
+    def __string(self):
+        while self.__peek() != '"' and not self.isAtEnd():
+            if self.__peek() == '\n':
+                self.line += 1
+            self.__advance()
+
+        if self.isAtEnd():
+            self.parent.error(self.line, "Unterminated string.")
+            return
+
+        self.__advance()  # This is the closing "
+
+        value = self.source[self.start + 1:self.current - 1]
+        self.__addToken(tt.STRING, value)
