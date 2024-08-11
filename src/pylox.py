@@ -32,16 +32,16 @@ class Lox:
             self.hadError = False
 
     def run(self, source: str):
-        scanner = Scanner(source)
+        scanner = Scanner(self, source)
         tokens = scanner.scanTokens()
         for token in tokens:
-            print(token)
+            print(token.type)
 
     def error(self, line: int, message: str):
-        self.report(line, "", message)
+        self.__report(line, "", message)
 
     def __report(self, line: int, where: int, message: str):
-        print(f"[line {line}] Error {where}: {message}")
+        print(f"[line {line}] Error{where}: {message}")
         self.hadError = True
 
 
