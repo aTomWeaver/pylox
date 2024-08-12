@@ -1,7 +1,7 @@
 // Starting comment
 
-((  )){} // grouping stuff
-!*+-/=<> <= == //operators
-
-"Here is a multi-
-lin string"
+fun function1() {
+    var1 = "dood"
+    print "hows it going, " + var1
+    return
+}
