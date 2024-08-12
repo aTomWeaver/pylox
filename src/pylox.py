@@ -25,7 +25,7 @@ class Lox:
 
     def runPrompt(self):
         while True:
-            line = input("> ")
+            line = input("<lox>>> ")
             if line == "exit()":  # TODO: proper EOF detection
                 break
             self.run(line)
