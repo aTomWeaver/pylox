@@ -76,7 +76,6 @@ class Scanner:
             self.__addToken(tt.GREATER_EQUAL if self.__match('=') else tt.GREATER)
         elif c == '/':
             if self.__match('/'):
-                # // This is a comment
                 while self.__peek() != '\n' and not self.isAtEnd():
                     self.__advance()
             else:
