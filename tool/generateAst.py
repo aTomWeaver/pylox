@@ -51,6 +51,10 @@ def defineAst(output_dir: str, base_class: str, types: str):
     with open(filepath, 'w') as file:
         file.writelines([write_string])
 
+def defineVisitor(writer, basename, types):
+    write_string = ""
+    pass
+
 
 if __name__ == "__main__":
     args = sys.argv[1:]
