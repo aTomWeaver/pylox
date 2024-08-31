@@ -2,7 +2,10 @@ import sys
 from os import path
 
 
+TAB = "    "
+RETURN = "\n"
 types = {
+        "Expr": "",
         "Binary": "left: Expr, operator: Token, right: Expr",
         "Grouping": "expression: Expr",
         "Literal": "value",
@@ -11,7 +14,6 @@ types = {
 
 
 def assembleBoilerplate(class_name: str, params: str, base_class=""):
-    TAB = "    "
     class_string = ""
     imports = []
     vars = ""
@@ -21,22 +23,38 @@ def assembleBoilerplate(class_name: str, params: str, base_class=""):
         imports.append("Optional")
     if base_class:
         base_class = f"({base_class})"
-    class_string += f"class {class_name}{base_class}:\n" \
-        f"{TAB}def __init__(self, {params}):\n"
-    for param in params.split(","):
-        var = param.strip().split(":")[0]
-        vars += f"{TAB}{TAB}self.{var} = {var}\n"
-    class_string += vars
+    class_string += f"class {class_name}{base_class}:\n"
+    if params:
+        class_string += f"{TAB}def __init__(self, {params}):\n"
+        for param in params.split(","):
+            var = param.strip().split(":")[0]
+            vars += f"{TAB}{TAB}self.{var} = {var}\n"
+        class_string += vars + RETURN
+    class_string += defineVisitorAccept(class_name)
     return class_string, imports
 
 
-def defineAst(output_dir: str, base_class: str, types: str):
+def defineVisitorAccept(classname: str):
+    write_string = ""
+    if classname == "Expr":
+        write_string += f"{TAB}def accept(self, visitor):{RETURN}"
+        write_string += f"{TAB}{TAB}pass{RETURN}"
+    else:
+        write_string += f"{TAB}def accept(self, visitor):{RETURN}"
+        write_string += f"{TAB}{TAB}return visitor.visit{classname}(self){RETURN}"
+    return write_string
+
+
+def defineAst(output_dir: str, base_class: str, types: dict):
     write_string = ""
     classes = []
     imports = set()
     filepath = path.join(output_dir, base_class + '.py')
     for class_name, params in types.items():
-        class_string, class_imports = assembleBoilerplate(class_name, params, base_class)
+        if class_name == "Expr":
+            class_string, class_imports = assembleBoilerplate(class_name, params)
+        else:
+            class_string, class_imports = assembleBoilerplate(class_name, params, base_class)
         classes.append(class_string)
         for item in class_imports:
             imports.add(item)
@@ -51,9 +69,12 @@ def defineAst(output_dir: str, base_class: str, types: str):
     with open(filepath, 'w') as file:
         file.writelines([write_string])
 
-def defineVisitor(writer, basename, types):
+def defineVisitor(output_dir: str, base_class: str, types: dict):
     write_string = ""
-    pass
+
+    filepath = path.join(output_dir, base_class + '.py')
+    with open(filepath, "w") as file:
+        file.writelines([write_string])
 
 
 if __name__ == "__main__":
